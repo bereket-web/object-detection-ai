@@ -1,0 +1,31 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.env
+.DS_Store
+
+# Source images and derived training splits are local-only; attribution lives in DATA_SOURCES.md.
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Fine-tuned weights are local-only pending separate upstream-weight and data-rights review.
+artifacts/*.pt
+artifacts/*.pth
+artifacts/*.ckpt
+artifacts/*.log
+!artifacts/.gitkeep
+
+# Runtime caches and uploaded user files must not be committed.
+.cache/
+uploads/
+
+# Training stdout is reproducible from the structured history/summary.
+reports/train_console.log
+reports/example_*_overlay.jpg

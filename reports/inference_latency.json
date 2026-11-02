@@ -1,0 +1,15 @@
+{
+  "device": "cpu",
+  "example_image": "data/processed/test/images/top-camera02.jpg",
+  "image_dimensions": [
+    640,
+    480
+  ],
+  "score_threshold": 0.55,
+  "warmup_runs": 2,
+  "timed_runs": 8,
+  "median_latency_ms": 77.3,
+  "minimum_latency_ms": 67.8,
+  "maximum_latency_ms": 83.9,
+  "environment_note": "Spot measurement in the project sandbox; not a guaranteed device benchmark."
+}

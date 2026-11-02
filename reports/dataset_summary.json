@@ -1,0 +1,46 @@
+{
+  "dataset": "zoncoen/tic-tac-toe-board-dataset",
+  "revision": "8d3782b5a9992abca0e5611e9473eac7a1f98822",
+  "license_declared_by_source": "CC BY 4.0",
+  "split_seed": 2026,
+  "split_strategy": "63-bit low-frequency DCT perceptual-hash connected components (Hamming distance <= 4); smallest multi-image component held out as test; remaining images shuffled into train/validation",
+  "perceptual_hash_distance_threshold": 4,
+  "visual_group_count": 4,
+  "visual_group_image_counts": {
+    "visual-01": 1,
+    "visual-02": 20,
+    "visual-03": 37,
+    "visual-04": 1
+  },
+  "held_out_test_visual_group": "visual-02",
+  "validation_is_capture_group_independent_from_train": false,
+  "images": 59,
+  "objects": 531,
+  "classes": [
+    "empty_cell",
+    "white_circle_cell",
+    "black_cross_cell"
+  ],
+  "split_image_counts": {
+    "train": 30,
+    "validation": 9,
+    "test": 20
+  },
+  "split_object_counts": {
+    "train": {
+      "empty_cell": 156,
+      "white_circle_cell": 66,
+      "black_cross_cell": 48
+    },
+    "validation": {
+      "empty_cell": 31,
+      "white_circle_cell": 28,
+      "black_cross_cell": 22
+    },
+    "test": {
+      "empty_cell": 95,
+      "white_circle_cell": 48,
+      "black_cross_cell": 37
+    }
+  }
+}

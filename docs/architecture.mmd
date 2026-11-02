@@ -1,0 +1,8 @@
+flowchart TD
+    A[CC BY 4.0 board images + YOLO labels<br/>pinned Hugging Face revision] --> B[Preparation<br/>validate, hash, perceptual-group]
+    B --> C[Train / validation / group-held-out test<br/>local-only data]
+    C --> D[Fine-tune TorchVision Faster R-CNN<br/>MobileNetV3 320 FPN]
+    D --> E[Validation selection + held-out evaluation<br/>mAP@0.50 IoU, per-class AP]
+    D --> F[CPU inference service<br/>FastAPI + local checkpoint]
+    F --> G[Browser UI<br/>upload or optional camera]
+    G --> H[Boxes, classes, confidence]

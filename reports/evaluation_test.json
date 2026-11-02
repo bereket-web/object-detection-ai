@@ -1,0 +1,70 @@
+{
+  "images": 20,
+  "ground_truth_objects": 180,
+  "iou_threshold": 0.5,
+  "score_threshold": 0.55,
+  "map50": 0.798616118163595,
+  "micro_precision": 0.7024390243902439,
+  "micro_recall": 0.8,
+  "micro_f1": 0.748051948051948,
+  "true_positives": 144,
+  "false_positives": 61,
+  "false_negatives": 36,
+  "classes": {
+    "empty_cell": {
+      "ground_truth": 95,
+      "predictions_at_threshold": 107,
+      "ap50": 0.8226763502854441,
+      "precision": 0.7102803738317757,
+      "recall": 0.8,
+      "f1": 0.7524752475247526,
+      "true_positives": 76,
+      "false_positives": 31,
+      "false_negatives": 19
+    },
+    "white_circle_cell": {
+      "ground_truth": 48,
+      "predictions_at_threshold": 58,
+      "ap50": 0.8670621689672585,
+      "precision": 0.7241379310344828,
+      "recall": 0.875,
+      "f1": 0.7924528301886793,
+      "true_positives": 42,
+      "false_positives": 16,
+      "false_negatives": 6
+    },
+    "black_cross_cell": {
+      "ground_truth": 37,
+      "predictions_at_threshold": 40,
+      "ap50": 0.7061098352380827,
+      "precision": 0.65,
+      "recall": 0.7027027027027027,
+      "f1": 0.6753246753246753,
+      "true_positives": 26,
+      "false_positives": 14,
+      "false_negatives": 11
+    }
+  },
+  "split": "test",
+  "checkpoint_metadata": {
+    "epoch": 10,
+    "validation_map50": 0.950401787490577,
+    "classes": [
+      "empty_cell",
+      "white_circle_cell",
+      "black_cross_cell"
+    ],
+    "architecture": "torchvision Faster R-CNN MobileNetV3-Large-320-FPN",
+    "config": {
+      "epochs_requested": 10,
+      "batch_size": 2,
+      "learning_rate": 0.003,
+      "seed": 2026,
+      "freeze_backbone_epochs": 1,
+      "train_images": 30,
+      "validation_images": 9,
+      "device": "cpu",
+      "pretrained_weights": "FasterRCNN_MobileNet_V3_Large_320_FPN_Weights.COCO_V1"
+    }
+  }
+}

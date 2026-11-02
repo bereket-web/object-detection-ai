@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a2c">
+  <title>BoardWatch — Object Detection</title>
+  <style>
+    :root { color-scheme: dark; --ink:#f4f7ff; --muted:#a7b4c8; --surface:#17243a; --line:#2c3a52; --accent:#7de0c1; --blue:#88aaff; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:radial-gradient(ellipse at 15% 0%,#203b58 0,transparent 43%),#0d1524; color:var(--ink); font:16px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+    main { max-width:1120px; margin:auto; padding:44px 24px 64px; }
+    .topline { display:flex; align-items:center; gap:10px; color:var(--accent); font-size:.78rem; font-weight:750; letter-spacing:.16em; text-transform:uppercase; }
+    .mark { width:29px;height:29px;border:1px solid #69ddbc;border-radius:9px;display:grid;place-items:center;font-size:16px; }
+    h1 { font-size:clamp(2.1rem,5vw,3.7rem); letter-spacing:-.05em; line-height:1.04; margin:22px 0 14px; max-width:780px; }
+    .intro { color:var(--muted); max-width:700px; font-size:1.05rem; margin:0 0 28px; }
+    .intro strong { color:#e9f3ff; }
+    .status { display:inline-flex;align-items:center;gap:8px;color:#b8c8dc;background:#162238;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:.82rem; margin-bottom:26px; }
+    .dot { width:8px;height:8px;border-radius:50%;background:#f0b86a;box-shadow:0 0 12px currentColor; }
+    .layout { display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:18px;align-items:start; }
+    .card { background:linear-gradient(145deg,rgba(27,41,65,.96),rgba(19,30,49,.98)); border:1px solid var(--line); border-radius:19px; padding:20px; box-shadow:0 20px 60px rgba(0,0,0,.16); }
+    .card h2 { margin:0 0 4px;font-size:1.12rem;letter-spacing:-.02em; }
+    .sub { color:var(--muted);font-size:.88rem;margin:0 0 16px; }
+    .controls { display:flex;gap:10px;flex-wrap:wrap;margin:0 0 15px; }
+    button,.file-label { border:1px solid #3c4d67;border-radius:10px;background:#23334d;color:var(--ink);padding:10px 14px;font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;transition:.15s ease; }
+    button:hover,.file-label:hover { border-color:var(--accent);transform:translateY(-1px); }
+    button.primary { background:var(--accent);color:#0b1a22;border-color:var(--accent); }
+    button:disabled { opacity:.45;cursor:not-allowed;transform:none; }
+    input[type=file] { position:absolute;width:1px;height:1px;clip:rect(0,0,0,0);overflow:hidden; }
+    .stage { min-height:280px;display:grid;place-items:center;overflow:hidden;border:1px dashed #394a64;border-radius:14px;background:repeating-linear-gradient(135deg,#111d30,#111d30 12px,#132137 12px,#132137 24px); }
+    .stage canvas { display:none;max-width:100%;max-height:64vh;object-fit:contain; }
+    .empty-state { color:#8fa1ba;text-align:center;padding:30px;max-width:330px; }
+    .empty-state b { display:block;color:#dce8f7;font-size:1rem;margin-bottom:6px; }
+    .camera-wrap { display:none;position:relative;max-width:100%;overflow:hidden;border-radius:14px;background:#0a1020; }
+    .camera-wrap video,.camera-wrap canvas { display:block;width:100%;max-height:64vh;object-fit:contain; }
+    .camera-wrap video { opacity:.48; }
+    .camera-wrap canvas { position:absolute;inset:0;width:100%;height:100%; }
+    .legend { display:flex;gap:12px;flex-wrap:wrap;margin-top:13px;color:#bdc9d8;font-size:.79rem; }
+    .key { display:flex;align-items:center;gap:6px; }
+    .swatch { width:10px;height:10px;border-radius:3px; }
+    .results { margin-top:18px;min-height:44px; }
+    .summary { display:flex;justify-content:space-between;gap:12px;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:8px; }
+    .summary strong { font-size:.92rem; }
+    .summary span { color:var(--muted);font-size:.8rem; }
+    .detection { display:flex;justify-content:space-between;gap:12px;padding:6px 0;color:#dce6f2;font-size:.86rem; }
+    .detection .name { text-transform:capitalize; }
+    .detection .score { color:var(--accent);font-variant-numeric:tabular-nums; }
+    .no-results { color:var(--muted);font-size:.87rem; }
+    .side { display:grid;gap:18px; }
+    .steps { display:grid;gap:13px;margin-top:16px; }
+    .step { display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;color:#c5d0df;font-size:.87rem; }
+    .number { width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:#20314a;color:var(--accent);font-size:.78rem;font-weight:750; }
+    .step b { display:block;color:#f1f5fc;font-size:.9rem;margin-bottom:2px; }
+    .note { border-left:2px solid #e1ae65;padding:10px 0 10px 12px;color:#bdc7d6;font-size:.84rem; }
+    .note b { color:#f0c37e; }
+    .privacy { color:#8496ad;font-size:.78rem;margin-top:12px; }
+    footer { border-top:1px solid var(--line);margin-top:27px;padding-top:16px;color:#8292a8;font-size:.78rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap; }
+    footer a { color:#a9c6ff; }
+    @media(max-width:820px){main{padding:30px 16px 44px}.layout{grid-template-columns:1fr}.stage{min-height:240px}.side{grid-template-columns:1fr 1fr}}
+    @media(max-width:560px){.side{grid-template-columns:1fr}.card{padding:16px}.controls button,.file-label{flex:1;text-align:center}.stage{min-height:220px}}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="topline"><span class="mark">□</span> BoardWatch / Object detection</div>
+    <h1>Nine cells. Three states.<br>One local detector.</h1>
+    <p class="intro">Upload a board photo or run the camera view. A compact <strong>Faster R-CNN + MobileNetV3</strong> model draws a box around each cell and predicts empty, circle, or cross.</p>
+    <div class="status"><span class="dot" id="healthDot"></span><span id="healthText">Checking local model…</span></div>
+    <section class="layout">
+      <div class="card">
+        <h2>Try the detector</h2>
+        <p class="sub">Best results with a centered, top-down view of a 3×3 board.</p>
+        <div class="controls">
+          <label class="file-label" for="imageFile">Choose image</label>
+          <input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp">
+          <button class="primary" id="detectButton" disabled>Detect cells</button>
+          <button id="cameraButton">Start camera</button>
+          <button id="stopButton" disabled>Stop</button>
+        </div>
+        <div class="stage" id="imageStage">
+          <div class="empty-state" id="emptyState"><b>Your image appears here</b>Choose a JPEG, PNG, or WebP board photo to see the predictions.</div>
+          <canvas id="resultCanvas"></canvas>
+        </div>
+        <div class="camera-wrap" id="cameraWrap"><video id="video" autoplay playsinline muted></video><canvas id="cameraCanvas"></canvas></div>
+        <div class="legend">
+          <span class="key"><i class="swatch" style="background:#18a999"></i>E · Empty</span>
+          <span class="key"><i class="swatch" style="background:#2463eb"></i>O · Circle</span>
+          <span class="key"><i class="swatch" style="background:#e34b4b"></i>X · Cross</span>
+        </div>
+        <div class="results" id="results"><span class="no-results">Predictions and confidence scores will appear here.</span></div>
+      </div>
+      <aside class="side">
+        <div class="card">
+          <h2>What it detects</h2>
+          <p class="sub">A specialized object-detection task, not a general-purpose detector.</p>
+          <div class="steps">
+            <div class="step"><span class="number">01</span><div><b>Locate each cell</b>Box coordinates are predicted in the image.</div></div>
+            <div class="step"><span class="number">02</span><div><b>Classify occupancy</b>Empty cell, white circle, or black cross.</div></div>
+            <div class="step"><span class="number">03</span><div><b>Run on your device</b>CPU inference; uploaded images stay with this local app.</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Data & limits</h2>
+          <p class="sub">59 rights-attributed images; 30 train, 9 validation, 20 group-held-out test.</p>
+          <div class="note"><b>Keep expectations narrow.</b> The dataset is small and top-down only. Angled views, other board styles, lighting, and real-world objects need additional data and evaluation.</div>
+          <p class="privacy">The demo runs locally. It does not send images to an external inference service.</p>
+        </div>
+      </aside>
+    </section>
+    <footer><span>BoardWatch · local research demo</span><span>Dataset attribution: <a href="https://huggingface.co/datasets/zoncoen/tic-tac-toe-board-dataset" target="_blank" rel="noreferrer">zoncoen, CC BY 4.0</a></span></footer>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const labels = {empty_cell:"empty cell", white_circle_cell:"white circle", black_cross_cell:"black cross"};
+    const colors = {empty_cell:"#18a999", white_circle_cell:"#2463eb", black_cross_cell:"#e34b4b"};
+    const shortLabels = {empty_cell:"E", white_circle_cell:"O", black_cross_cell:"X"};
+    let selectedFile = null, stream = null, interval = null, lastRequest = 0, cameraBusy = false;
+    const canvas = $("resultCanvas"), ctx = canvas.getContext("2d");
+    const cameraCanvas = $("cameraCanvas"), cameraCtx = cameraCanvas.getContext("2d");
+
+    async function checkHealth(){
+      try { const r=await fetch("/health"); const d=await r.json();
+        $("healthDot").style.background=d.model_loaded?"#7de0c1":"#f0b86a";
+        $("healthText").textContent=d.model_loaded?"Model ready · CPU":"Model not trained yet · run the setup commands";
+      } catch { $("healthText").textContent="Local API is not responding"; }
+    }
+    function drawBoxes(targetCtx, detections, width, height){
+      const sx=targetCtx.canvas.width/width, sy=targetCtx.canvas.height/height;
+      targetCtx.lineWidth=Math.max(2,Math.min(targetCtx.canvas.width,targetCtx.canvas.height)/180);
+      targetCtx.font=`600 ${Math.max(10,Math.min(13,Math.min(targetCtx.canvas.width,targetCtx.canvas.height)/40))}px system-ui`;
+      for(const d of detections){
+        const [x1,y1,x2,y2]=d.box.map((v,i)=>v*(i%2===0?sx:sy));
+        const color=colors[d.label]||"#7de0c1"; targetCtx.strokeStyle=color; targetCtx.fillStyle=color;
+        targetCtx.strokeRect(x1,y1,x2-x1,y2-y1);
+        const text=`${shortLabels[d.label]||"?"} ${(d.score*100).toFixed(0)}`;
+        const h=parseInt(targetCtx.font,10)+7, tw=targetCtx.measureText(text).width+12;
+        targetCtx.fillRect(x1,Math.max(0,y1-h),tw,h);
+        targetCtx.fillStyle="#fff"; targetCtx.fillText(text,x1+6,Math.max(h-3,y1-5));
+      }
+    }
+    function showDetections(data){
+      const rows=data.detections||[];
+      $("results").innerHTML=`<div class="summary"><strong>${rows.length} cell${rows.length===1?"":"s"} detected</strong><span>score threshold ${Number(data.score_threshold).toFixed(2)}</span></div>`+
+        (rows.length?rows.map(d=>`<div class="detection"><span class="name">${labels[d.label]||d.label}</span><span class="score">${(d.score*100).toFixed(1)}%</span></div>`).join(""):`<span class="no-results">No cells passed this confidence threshold. Try a clearer, centered board photo.</span>`);
+    }
+    async function callDetector(blob){
+      const form=new FormData(); form.append("file",blob,"board.jpg");
+      const response=await fetch("/detect?score_threshold=0.55",{method:"POST",body:form});
+      const data=await response.json(); if(!response.ok) throw new Error(data.detail||"Inference request failed"); return data;
+    }
+    $("imageFile").addEventListener("change",(event)=>{
+      selectedFile=event.target.files[0]||null; $("detectButton").disabled=!selectedFile;
+      if(!selectedFile)return;
+      const img=new Image(); img.onload=()=>{canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;ctx.drawImage(img,0,0);canvas.style.display="block";$("emptyState").style.display="none";};
+      img.src=URL.createObjectURL(selectedFile);
+    });
+    $("detectButton").addEventListener("click",async()=>{
+      if(!selectedFile)return; $("detectButton").disabled=true; $("detectButton").textContent="Detecting…";
+      try {const result=await callDetector(selectedFile);const img=new Image();img.onload=()=>{canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;ctx.drawImage(img,0,0);drawBoxes(ctx,result.detections,result.width,result.height);};img.src=URL.createObjectURL(selectedFile);showDetections(result);}
+      catch(e){$("results").innerHTML=`<span class="no-results">${e.message}</span>`;}
+      finally{$("detectButton").disabled=false;$("detectButton").textContent="Detect cells";}
+    });
+    $("cameraButton").addEventListener("click",async()=>{
+      try {stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false});$("video").srcObject=stream;$("cameraWrap").style.display="block";$("imageStage").style.display="none";$("cameraButton").disabled=true;$("stopButton").disabled=false;interval=setInterval(cameraTick,1300);}
+      catch(e){$("results").innerHTML=`<span class="no-results">Camera unavailable: ${e.message}</span>`;}
+    });
+    async function cameraTick(){
+      const now=Date.now();if(cameraBusy||now-lastRequest<1200||$("video").readyState<2)return;lastRequest=now;cameraBusy=true;
+      const video=$("video");cameraCanvas.width=video.videoWidth;cameraCanvas.height=video.videoHeight;cameraCtx.drawImage(video,0,0,cameraCanvas.width,cameraCanvas.height);
+      const frame=await new Promise(resolve=>cameraCanvas.toBlob(resolve,"image/jpeg",0.84));
+      try{const result=await callDetector(frame);cameraCtx.drawImage(video,0,0,cameraCanvas.width,cameraCanvas.height);drawBoxes(cameraCtx,result.detections,result.width,result.height);showDetections(result);}
+      catch(e){$("results").innerHTML=`<span class="no-results">${e.message}</span>`;}
+      finally{cameraBusy=false;}
+    }
+    function stopCamera(){if(interval){clearInterval(interval);interval=null;}if(stream){stream.getTracks().forEach(track=>track.stop());stream=null;}$("cameraWrap").style.display="none";$("imageStage").style.display="grid";$("cameraButton").disabled=false;$("stopButton").disabled=true;}
+    $("stopButton").addEventListener("click",stopCamera);
+    checkHealth();
+  </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+{
+  "selection_split": "validation",
+  "selection_objective": "maximum micro-F1 at IoU >= 0.50; ties prefer precision, then higher threshold",
+  "thresholds_tested": [
+    0.25,
+    0.35,
+    0.45,
+    0.55,
+    0.65,
+    0.75,
+    0.85,
+    0.9
+  ],
+  "selected_threshold": 0.55,
+  "selection_metrics": {
+    "micro_precision": 0.8461538461538461,
+    "micro_recall": 0.9506172839506173,
+    "micro_f1": 0.8953488372093024,
+    "true_positives": 77,
+    "false_positives": 14,
+    "false_negatives": 4
+  },
+  "sweep": [
+    {
+      "threshold": 0.25,
+      "micro_precision": 0.675,
+      "micro_recall": 1.0,
+      "micro_f1": 0.8059701492537313,
+      "tp": 81,
+      "fp": 39,
+      "fn": 0
+    },
+    {
+      "threshold": 0.35,
+      "micro_precision": 0.7383177570093458,
+      "micro_recall": 0.9753086419753086,
+      "micro_f1": 0.8404255319148937,
+      "tp": 79,
+      "fp": 28,
+      "fn": 2
+    },
+    {
+      "threshold": 0.45,
+      "micro_precision": 0.8125,
+      "micro_recall": 0.9629629629629629,
+      "micro_f1": 0.8813559322033898,
+      "tp": 78,
+      "fp": 18,
+      "fn": 3
+    },
+    {
+      "threshold": 0.55,
+      "micro_precision": 0.8461538461538461,
+      "micro_recall": 0.9506172839506173,
+      "micro_f1": 0.8953488372093024,
+      "tp": 77,
+      "fp": 14,
+      "fn": 4
+    },
+    {
+      "threshold": 0.65,
+      "micro_precision": 0.8690476190476191,
+      "micro_recall": 0.9012345679012346,
+      "micro_f1": 0.8848484848484849,
+      "tp": 73,
+      "fp": 11,
+      "fn": 8
+    },
+    {
+      "threshold": 0.75,
+      "micro_precision": 0.9066666666666666,
+      "micro_recall": 0.8395061728395061,
+      "micro_f1": 0.8717948717948718,
+      "tp": 68,
+      "fp": 7,
+      "fn": 13
+    },
+    {
+      "threshold": 0.85,
+      "micro_precision": 0.921875,
+      "micro_recall": 0.7283950617283951,
+      "micro_f1": 0.8137931034482758,
+      "tp": 59,
+      "fp": 5,
+      "fn": 22
+    },
+    {
+      "threshold": 0.9,
+      "micro_precision": 0.9473684210526315,
+      "micro_recall": 0.6666666666666666,
+      "micro_f1": 0.782608695652174,
+      "tp": 54,
+      "fp": 3,
+      "fn": 27
+    }
+  ],
+  "validation_is_capture_group_independent_from_train": false
+}

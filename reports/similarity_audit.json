@@ -1,0 +1,41 @@
+{
+  "hash": "grayscale 32x32 DCT, low-frequency 8x8 coefficients excluding DC (63 bits)",
+  "hamming_distance_threshold": 4,
+  "transitive_connected_components": {
+    "visual-01": {
+      "image_count": 1,
+      "split_counts": {
+        "train": 1,
+        "validation": 0,
+        "test": 0
+      }
+    },
+    "visual-02": {
+      "image_count": 20,
+      "split_counts": {
+        "train": 0,
+        "validation": 0,
+        "test": 20
+      }
+    },
+    "visual-03": {
+      "image_count": 37,
+      "split_counts": {
+        "train": 28,
+        "validation": 9,
+        "test": 0
+      }
+    },
+    "visual-04": {
+      "image_count": 1,
+      "split_counts": {
+        "train": 1,
+        "validation": 0,
+        "test": 0
+      }
+    }
+  },
+  "held_out_test_visual_group": "visual-02",
+  "test_to_train_or_validation_pairs_within_threshold": 0,
+  "validation_shares_a_visual_group_with_training": true
+}
